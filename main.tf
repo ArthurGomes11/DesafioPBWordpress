@@ -30,7 +30,6 @@ resource "aws_vpc" "main" {
   })
 }
 
-# Sub-redes públicas em 2 AZs diferentes
 resource "aws_subnet" "public_a" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
@@ -51,7 +50,6 @@ resource "aws_subnet" "public_b" {
   })
 }
 
-# Sub-redes privadas em 2 AZs diferentes
 resource "aws_subnet" "private_a" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.3.0/24"
@@ -70,7 +68,6 @@ resource "aws_subnet" "private_b" {
   })
 }
 
-# Internet Gateway para as sub-redes públicas
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
   tags = merge(local.tags, {
@@ -78,7 +75,6 @@ resource "aws_internet_gateway" "main" {
   })
 }
 
-# Tabela de Roteamento Pública
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
   route {
@@ -100,7 +96,6 @@ resource "aws_route_table_association" "public_b" {
   route_table_id = aws_route_table.public.id
 }
 
-# Elastic IP e NAT Gateway (apenas um)
 resource "aws_eip" "nat" {
   domain = "vpc"
   tags = merge(local.tags, {
@@ -110,13 +105,12 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public_a.id # Colocado na primeira sub-rede pública
+  subnet_id     = aws_subnet.public_a.id 
   tags = merge(local.tags, {
     Name = "wordpress-nat-gw-${var.env}"
   })
 }
 
-# Tabela de Roteamento Privada
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
   route {
@@ -196,7 +190,7 @@ resource "aws_security_group" "efs" {
   vpc_id = aws_vpc.main.id
   tags   = local.tags
   ingress {
-    from_port       = 2049 # NFS
+    from_port       = 2049 
     to_port         = 2049
     protocol        = "tcp"
     security_groups = [aws_security_group.ec2.id]
@@ -354,7 +348,6 @@ resource "aws_autoscaling_group" "main" {
   }
 }
 
-# Política de escalonamento baseada em CPU
 resource "aws_autoscaling_policy" "cpu_scaling" {
   name                   = "wordpress-cpu-scaling-policy-${var.env}"
   autoscaling_group_name = aws_autoscaling_group.main.name
