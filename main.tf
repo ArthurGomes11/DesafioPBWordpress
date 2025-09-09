@@ -105,7 +105,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public_a.id 
+  subnet_id     = aws_subnet.public_a.id
   tags = merge(local.tags, {
     Name = "wordpress-nat-gw-${var.env}"
   })
@@ -190,7 +190,7 @@ resource "aws_security_group" "efs" {
   vpc_id = aws_vpc.main.id
   tags   = local.tags
   ingress {
-    from_port       = 2049 
+    from_port       = 2049
     to_port         = 2049
     protocol        = "tcp"
     security_groups = [aws_security_group.ec2.id]
@@ -233,19 +233,19 @@ resource "aws_db_subnet_group" "main" {
 }
 
 resource "aws_db_instance" "main" {
-  identifier           = "wordpress-db-${var.env}"
-  instance_class       = "db.t3.micro"
-  allocated_storage    = 20
-  engine               = "mysql"
-  engine_version       = "8.0"
-  username             = var.db_user
-  password             = var.db_password
-  db_name              = var.db_name
-  db_subnet_group_name = aws_db_subnet_group.main.name
+  identifier             = "wordpress-db-${var.env}"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 20
+  engine                 = "mysql"
+  engine_version         = "8.0"
+  username               = var.db_user
+  password               = var.db_password
+  db_name                = var.db_name
+  db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds.id]
-  skip_final_snapshot  = true
-  multi_az             = false # Conforme solicitado
-  tags                 = local.tags
+  skip_final_snapshot    = true
+  multi_az               = false # Conforme solicitado
+  tags                   = local.tags
 }
 
 
@@ -259,8 +259,8 @@ resource "aws_iam_role" "ec2_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Action    = "sts:AssumeRole",
-      Effect    = "Allow",
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
       Principal = {
         Service = "ec2.amazonaws.com"
       }
@@ -389,6 +389,11 @@ resource "aws_lb_target_group" "main" {
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
+  }
+  stickiness {
+    cookie_duration = 86400 # Mantém a sessão por 1 dia
+    enabled         = true  # Altere esta linha para true
+    type            = "lb_cookie"
   }
 }
 
