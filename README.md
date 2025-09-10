@@ -109,3 +109,20 @@ Após a conclusão da implantação, o Terraform exibirá o DNS do Application L
 Outputs:
 
 alb_dns_name = "wordpress-alb-dev-xxxxxxxxxx.us-east-1.elb.amazonaws.com"
+```
+
+## Test do auto scaling
+
+Após acessar o DNS application com sucesso para testar basta acessar a ec2 via Session Manager e instalar as bibliotecas.
+```bash
+sudo amazon-linux-extras install epel -y
+sudo yum install stress-ng -y
+
+```
+Após instalar a biblioteca execute o comando.
+
+```bash
+stress-ng --cpu 1 --timeout 300s
+```
+
+Que vai gerar um estresse de 100% de uso na ec2 escolhida assim criando as demais.
