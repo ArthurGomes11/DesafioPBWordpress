@@ -244,7 +244,7 @@ resource "aws_db_instance" "main" {
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds.id]
   skip_final_snapshot    = true
-  multi_az               = false # Conforme solicitado
+  multi_az               = false
   tags                   = local.tags
 }
 
@@ -391,8 +391,8 @@ resource "aws_lb_target_group" "main" {
     unhealthy_threshold = 2
   }
   stickiness {
-    cookie_duration = 86400 # Mantém a sessão por 1 dia
-    enabled         = true  # Altere esta linha para true
+    cookie_duration = 86400
+    enabled         = true
     type            = "lb_cookie"
   }
 }
