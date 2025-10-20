@@ -1,11 +1,9 @@
-# Declaração da variável de ambiente que faltava
 variable "env" {
   description = "Nome do ambiente (ex: dev, prod) para nomear os recursos."
   type        = string
-  default     = "dev" # Usará 'dev' como padrão se nenhum valor for fornecido
+  default     = "dev"
 }
 
-# --- Outras variáveis que você já usa ---
 
 variable "vpc_cidr" {
   description = "Bloco CIDR para a VPC."
